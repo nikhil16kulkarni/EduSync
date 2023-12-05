@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduSync - Course Recommender</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px;
+      width: 60%;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    #recommendations {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container" class="container">
+    <h1 class="mb-4">EduSync - Course Recommender</h1>
+    <div class="input-group mb-3">
+      <input type="text" id="courseName" class="form-control" placeholder="Enter course name">
+      <div class="input-group-append">
+        <button class="btn btn-success" onclick="getRecommendations()">Get Recommendations</button>
+      </div>
+    </div>
+    <div id="recommendations"></div>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <script>
+    async function getRecommendations() {
+        const courseName = document.getElementById('courseName').value;
+
+        try {
+            const response = await fetch('http://127.0.0.1:5000/recommend', {
+            method: 'POST', // Specify the method as POST
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ course_name: courseName }),
+            });
+
+            if (!response.ok) {
+            throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+            displayRecommendations(result.recommendations);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function displayRecommendations(recommendations) {
+      const recommendationsContainer = document.getElementById('recommendations');
+      recommendationsContainer.innerHTML = '<h2 class="mt-4">Recommended Courses:</h2>';
+
+      if (recommendations.length === 0) {
+        recommendationsContainer.innerHTML += '<p>No recommendations found.</p>';
+      } else {
+        const list = document.createElement('ul');
+        list.classList.add('list-group');
+        recommendations.forEach(course => {
+          const listItem = document.createElement('li');
+          listItem.textContent = course;
+          listItem.classList.add('list-group-item');
+          list.appendChild(listItem);
+        });
+        recommendationsContainer.appendChild(list);
+      }
+    }
+  </script>
+</body>
+</html>
