@@ -6,18 +6,15 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Load and preprocess data
-file_path = 'D:/IUB/Sem3/ECC/Project/udemy_courses.csv'
+file_path = 'udemy_courses.csv'
 df = load_and_preprocess_data(file_path)
 
-# Calculate similarity matrix
 cosine_sim = calculate_similarity_matrix(df)
 
-# Serve the index.html file
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Handle course recommendation logic
 @app.route('/recommend', methods=['POST'])
 def recommend_courses():
     data = request.json
@@ -30,4 +27,4 @@ def recommend_courses():
     return jsonify({'recommendations': recommended_courses})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',port=5000,debug=True)

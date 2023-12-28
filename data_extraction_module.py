@@ -10,7 +10,6 @@ def write_courses_to_csv(courses, csv_filename):
                       'predictive_score', 'relevancy_score', 'headline']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-        # If the file is empty, write the header
         if csvfile.tell() == 0:
             writer.writeheader()
 
@@ -39,10 +38,9 @@ def write_courses_to_csv(courses, csv_filename):
             })
 
 if __name__ == "__main__":
-    # Change the path to your desired directory
-    csv_filename = 'D:/IUB/Sem3/ECC/Project/udemy_courses.csv'
+    csv_filename = 'udemy_courses.csv'
 
-    for page_number in range(1, 5):  # Reducing the number of pages for testing
+    for page_number in range(1, 5):  
         courses = udemy.courses(page=page_number, page_size=100)
         write_courses_to_csv(courses, csv_filename)
 

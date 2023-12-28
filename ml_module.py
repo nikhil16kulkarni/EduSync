@@ -2,6 +2,10 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 import re
+from pyudemy import Udemy
+
+udemy = Udemy("tnIIoAvRcZiGqOU83iakp1gflqdqTjxQX2zM4ODg", "GNxUEVdLERvcPew3xou5uWSASpDQzFFFZvZQToK6fFgFld7TQsfOJzB3qcgGYuQBf9ajY8HC6GDZH8MGM0xkpEGK3s4tbnIVdCD4fqFdIRZFayfLSh61mBBF35nDC8uj")
+
 
 def load_and_preprocess_data(file_path):
     df = pd.read_csv(file_path)
@@ -24,8 +28,18 @@ def get_recommendations(course_title, df, cosine_sim):
 
     # Check if the cleaned title exists in the DataFrame
     if cleaned_title not in df['cleaned_title'].values:
+        ls = []
         print(f"Course '{course_title}' not found in the DataFrame.")
-        return None
+        print(course_title)
+        tmp_courses = udemy.courses(search=course_title)
+        cnt = 0
+        for i in tmp_courses['results']:
+            ls.append(i['title'])
+            if(cnt == 5):
+                break
+            cnt+=1
+        print(ls)
+        return ls
 
     idx = df[df['cleaned_title'] == cleaned_title].index[0]
 
